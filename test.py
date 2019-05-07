@@ -11,7 +11,7 @@ INIT_POP = 1000
 INIT_INFECTED = 50
 NUM_COLS = 40
 NUM_ROWS = 40
-NUM_STEPS = 20
+NUM_STEPS = 10
 
 infection_probability = INIT_INFECTED/INIT_POP
 numberOfInfected = 0;

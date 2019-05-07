@@ -1,14 +1,19 @@
 '''
-This is a people class which represents a person in the world
+
+This is a people class which represents a person in the world. 
+Each people have an unique identifier or ID, it's location as xpos and ypos, information about whether it is infected or not, resistance in range of (0,1) and infection time.
 '''
 import uuid
 import random
 import matplotlib.pyplot as plt
 import numpy as np
 
-class People:
+class People:   
 	area = (5)**2
 	def __init__(self, num_rows,num_cols, infection= True, resistance= random.random(), infection_time =  0):
+        '''
+        
+        '''
 		self.ID = uuid.uuid4()
 		self.xpos = random.randint(0,num_rows)
 		self.ypos = random.randint(0,num_cols)
@@ -16,13 +21,13 @@ class People:
 		self.resistance = resistance
 		self.probability_of_Infection = 0.0
 		self.infection_time = infection_time
-	
-	def calculate_infection(self):
-		if self.resistance<0.5:
-			infected = True
 
-	def de_infection(self):
-		infected = False
+        
+	def gets_deinfection(self):
+		self.infected = False
+
+	def gets_infected(self):
+		self.infected = True
 
 	def time_step(self):
 		if infected:
@@ -57,8 +62,6 @@ class People:
 			if (self.xpos,self.ypos) in infected_cells:
 				self.probability_of_Infection +=0.10
 			if self.resistance < self.probability_of_Infection:
-				self.infected = True
+				self.gets_infected()
 				numberOfInfected+=1
 		return numberOfInfected
-
-	
