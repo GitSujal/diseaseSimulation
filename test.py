@@ -5,34 +5,52 @@ from  people import People
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-
+import sys
 
 '''
 Making scatterplot based on either a person is dead, infected or healthy
 '''
-def scatterplot_people(person,numberOfInfected,numberOfDead):
+
+def scatterplot_people(person):
 	#Getting data from each person for plotting.
 	(xpos,ypos,infected,dead) = person.plot_people()
 	if dead:
 		plt.scatter(xpos,ypos,s=area,marker='x',alpha=0.2,c='black')
-		numberOfDead+=1
-		numberOfInfected+=1
+
 	elif infected:
 		plt.scatter(xpos,ypos,s=area,marker='o',alpha=0.2,c='red')
 		infected_cells.append((xpos,ypos))
-		numberOfInfected+=1
 	elif infected ==False:
 		plt.scatter(xpos,ypos,s=area,marker='o',alpha=0.2,c='blue')
-	return (numberOfInfected,numberOfDead)	
+
+'''
+Printing detail about the population, including number of people living, infected and dead.
+'''
 
 def print_detail(INIT_POP,numberOfHealthyPeople,numberOfInfected,numberOfDead):
-	print("Total Population Number of Healthy People Number of Infected People Dead People")
-	print("    ",INIT_POP, "\t  ",numberOfHealthyPeople, "\t   ", numberOfInfected, "  \t  ",numberOfDead)
+	print("Alive Populatingo| Healthy People| Infected People| Dead People")
+	print("    ",INIT_POP - numberOfDead , "\t      ",numberOfHealthyPeople, "\t  \t", numberOfInfected, " \t \t  ",numberOfDead)
 
 '''
 Initialising the world with population.
 Populating the world with specified population and sepecific number of initially infected people.
 '''	
+def plot_Airport(Cells):
+	x_array= []
+	y_array=[]
+	for x,y in Cells:
+		x_array.append(x)
+		y_array.append(y)
+		
+	plt.scatter(x_array,y_array,s=4*area,marker='s',c='yellow',alpha=0.75)
+
+def plot_boundary(Cells):
+	x_array= []
+	y_array=[]
+	for x,y in Cells:
+		x_array.append(x)
+		y_array.append(y)
+	plt.scatter(x_array,y_array,s=area,marker='_',c='black',alpha=1.0)
 
 population = []
 INIT_POP = 200
@@ -42,31 +60,43 @@ NUM_ROWS = 20
 NUM_STEPS = 14
 area = (5)**2
 
+Airport_Cells = [(NUM_COLS/4,0),(NUM_COLS,NUM_ROWS/4),(0,3*NUM_ROWS/4),(NUM_COLS,3*NUM_ROWS/4)]
+
+#Defining the boundary cells
+
+Boundary_Cells = []
+for i in range(0,(NUM_ROWS+1),1):
+	Boundary_Cells.append((NUM_COLS/2,i))
+for i in range(0,(NUM_COLS+1),1):
+	Boundary_Cells.append((i,NUM_ROWS/2))
+
+#Making few doors at the boundaries.
+random_index = np.random.randint(0,len(Boundary_Cells),size=4)
+for i in random_index:
+	del Boundary_Cells[i-1]
+	del Boundary_Cells[i]
+	del Boundary_Cells[i+1]
+
+
 infection_probability = INIT_INFECTED/INIT_POP
 numberOfInfected = 0
+numberOfDead =0
+numberOfHealthyPeople=0
+total_dead =[]
 infected_cells = []
 total_infected = []
-numberOfDead =0
-total_dead =[]
-numberOfHealthyPeople=0
 total_Healthy=[]
 
 for i in range(0,INIT_POP):
 	person=People(NUM_ROWS,NUM_COLS,infection = np.random.choice([0,1],p=[1-infection_probability,infection_probability]) ,infection_time=0)		
 	population.append(person)
-	numberOfInfected,numberOfDead = scatterplot_people(person,numberOfInfected,numberOfDead)
-	numberOfHealthyPeople = INIT_POP - numberOfInfected - numberOfDead
-
-'''
-Printing information regarding total healthy, infected and dead people.
-'''
-print_detail(INIT_POP,numberOfHealthyPeople,numberOfInfected,numberOfDead)
+	scatterplot_people(person)
+	plot_Airport(Airport_Cells)
+	plot_boundary(Boundary_Cells)
+	
+plt.xlim(0,NUM_ROWS)
+plt.ylim(0,NUM_COLS)
 plt.show()
-
-# total_infected.append(numberOfInfected)
-# total_Healthy.append(numberOfHealthyPeople)
-# total_dead.append(numberOfDead)
-
 
 '''
 	Disease simulation for each timestep. Following things occur on each timestep.
@@ -76,47 +106,40 @@ plt.show()
 	4. The infection time increases by 1 for each timestep for an infected person.
 	5. If a people is infected for more than 10 timestep it dies.
 '''
+
 total_infected=[]
 total_Healthy=[]
 total_dead=[]
 for timestep in range(NUM_STEPS):
-	numberOfHealthyPeople=0
 	numberOfInfected=0
 	numberOfDead=0
-
 	for person in population:
-		person.each_timestep(NUM_ROWS,NUM_COLS,infected_cells)
-		# person.move_people(NUM_ROWS,NUM_COLS)
-		# numberOfInfected = person.check_infection(infected_cells,numberOfInfected)
-		# person.plot_people()
-		numberOfInfected,numberOfDead = scatterplot_people(person,numberOfInfected,numberOfDead)
-		numberOfHealthyPeople = INIT_POP - numberOfInfected - numberOfDead
+		numberOfInfected,numberOfDead =  person.each_timestep(NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells)
+		scatterplot_people(person)
 	
+	numberOfHealthyPeople = INIT_POP - numberOfInfected - numberOfDead
 	total_infected.append(numberOfInfected)
 	total_Healthy.append(numberOfHealthyPeople)
 	total_dead.append(numberOfDead)
 
 	print("\n######################### TIMESTEP: ", timestep, "#########################\n")
 	print_detail(INIT_POP,numberOfHealthyPeople,numberOfInfected,numberOfDead)
-
+	plt.xlim(0,NUM_ROWS)
+	plt.ylim(0,NUM_COLS)
+	plot_Airport(Airport_Cells)
+	plot_boundary(Boundary_Cells)
 	filename="./Output/Outputfile"+str(timestep)+".png"
 	plt.savefig(filename)
 	plt.clf()
 	plt.cla()
 	plt.close()
 	print("File saved as ",filename)
-	# plt.show()
-
+	#plt.show()
 
 xAxis = range(0,NUM_STEPS)
-# print(xAxis)
-# print(total_Healthy)
-
 plt.plot(xAxis,total_Healthy,'b-',xAxis,total_infected,'r-',xAxis,total_dead,'k-')
 plt.show()
-# plt.plot(range(0,NUM_STEPS),total_infected)
-# plt.savefig("growth.png")
-# plt.ylabel("Infected Population")
-# plt.xlabel("TIMESTEP")
-# plt.title("Growth of infected Population over time")
-# plt.show()
+plt.savefig("growth.png")
+plt.xlabel("TIMESTEP")
+plt.title("Growth of Healthy,Infected and Dead Population over time")
+plt.show()
