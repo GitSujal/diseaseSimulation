@@ -5,15 +5,10 @@ Each people have an unique identifier or ID, it's location as xpos and ypos, inf
 '''
 import uuid
 import random
-import matplotlib.pyplot as plt
 import numpy as np
-
 class People:   
-	area = (5)**2
+	
 	def __init__(self, num_rows,num_cols, infection= True, resistance= random.random(), infection_time =  0):
-        '''
-        
-        '''
 		self.ID = uuid.uuid4()
 		self.xpos = random.randint(0,num_rows)
 		self.ypos = random.randint(0,num_cols)
@@ -21,6 +16,7 @@ class People:
 		self.resistance = resistance
 		self.probability_of_Infection = 0.0
 		self.infection_time = infection_time
+		self.dead = False
 
         
 	def gets_deinfection(self):
@@ -41,11 +37,17 @@ class People:
 		else:
 			print("Peope ID:", self.ID, " At location (", self.xpos, ",", self.ypos, ") is not infected")
 
+	# def plot_people(self):
+	# 	if self.infected:
+	# 		plt.scatter(self.xpos,self.ypos,s=self.area,marker='o',alpha=0.2,c='red')
+	# 	else:
+	# 		plt.scatter(self.xpos,self.ypos,s=self.area,marker='o',alpha=0.2,c='blue')
+
 	def plot_people(self):
-		if self.infected:
-			plt.scatter(self.xpos,self.ypos,s=self.area,marker='o',alpha=0.2,c='red')
-		else:
-			plt.scatter(self.xpos,self.ypos,s=self.area,marker='o',alpha=0.2,c='blue')
+
+		return (self.xpos,self.ypos,self.infected,self.dead)
+
+
 
 	def move_people(self,NUM_ROWS,NUM_COLS):
 		rMove = random.randint(-1,1)
@@ -57,11 +59,26 @@ class People:
 		self.xpos+=rMove
 		self .ypos+=cMove
 
-	def check_infection(self,infected_cells,numberOfInfected):
-		if self.infected == False:
-			if (self.xpos,self.ypos) in infected_cells:
-				self.probability_of_Infection +=0.10
-			if self.resistance < self.probability_of_Infection:
-				self.gets_infected()
-				numberOfInfected+=1
-		return numberOfInfected
+	def check_infection(self,infected_cells,):
+		if (self.xpos,self.ypos) in infected_cells:
+			self.probability_of_Infection +=0.10
+		if self.resistance < self.probability_of_Infection:
+			self.gets_infected()
+			
+	def check_dead(self):
+		if self.infection_time>0:
+			self.dead= np.random.choice([0,1],p=[1/self.infection_time,1-1/self.infection_time])
+		else:
+		 	self.dead=False
+
+	def each_timestep(self,NUM_ROWS,NUM_COLS,infected_cells):
+		
+		self.move_people(NUM_ROWS,NUM_COLS)
+		
+		if self.infected:
+			self.infection_time+=1
+			self.check_dead()
+		elif self.infected ==False:
+			self.infection_time=0
+			self.check_infection(infected_cells)
+			
