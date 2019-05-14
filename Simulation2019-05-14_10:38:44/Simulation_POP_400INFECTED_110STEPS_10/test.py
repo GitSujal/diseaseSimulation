@@ -127,6 +127,8 @@ for i in random_index:
 	del Boundary_Cells[i]
 	del Boundary_Cells[i-2]
 
+
+
 '''
 Initialising population and factors associated with population and each people
 '''
