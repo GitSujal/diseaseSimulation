@@ -47,51 +47,56 @@ class People:
 		return (self.xpos,self.ypos,self.infected,self.dead)
 
 
-	def move_people(self,NUM_ROWS,NUM_COLS):
+	def move_people(self,NUM_ROWS,NUM_COLS,Airport_Cells,Boundary_Cells):
 
 		#Teleporting to random airport if a person is at any airport
-		if (self.xpos,self.ypos) in Airport_Cells:
-			self.xpos,self.ypos = Airport_Cells[np.random.randint(len(Airport_Cells))]
-
-			#For Debugging
-			print("Someone just passed through an airport.")
-
-		rMove = random.randint(-1,1)
-		cMove = random.randint(-1,1)
-
-		#Checking if the movement takes the people out of Xlim and Ylim.
-		if  ((self.xpos + rMove) > (NUM_ROWS-1) or ( self.xpos + rMove)<0):
-			rMove = 0
-		
-		if (self.ypos + cMove) > (NUM_COLS-1) or (self.ypos + cMove)<0:
-			cMove =0
-		
-		#Stopping person from getting through the boundary wall.
-		if ((self.xpos + rMove),( self.xpos + rMove)) in Boundary_Cells:
-			print("Someone hit the boundary")
+		if self.dead:
 			rMove=0
 			cMove=0
+
+		else:	
+			if (self.xpos,self.ypos) in Airport_Cells:
+				self.xpos,self.ypos = Airport_Cells[np.random.randint(len(Airport_Cells))]
+
+			rMove = random.randint(-1,1)
+			cMove = random.randint(-1,1)
+
+			#Checking if the movement takes the people out of Xlim and Ylim.
+			if  ((self.xpos + rMove) > (NUM_ROWS-1) or ( self.xpos + rMove)<0):
+				rMove = 0
+		
+			if (self.ypos + cMove) > (NUM_COLS-1) or (self.ypos + cMove)<0:
+				cMove =0
+		
+			#Stopping person from getting through the boundary wall.
+			if ((self.xpos + rMove),( self.xpos + rMove)) in Boundary_Cells:
+				# print("Someone hit the boundary")
+				rMove=0
+				cMove=0
 		
 		self.xpos+=rMove
 		self .ypos+=cMove
 
-		
-
-
-
 
 	def check_infection(self,infected_cells,):
-		if (self.xpos,self.ypos) in infected_cells:
-			self.probability_of_Infection +=0.10
-		if self.resistance < self.probability_of_Infection:
-			self.gets_infected()
+		if self.dead:
+			'''
+			Dead ones cannot infect healthy people
+			'''
+
+		else:	
+			if (self.xpos,self.ypos) in infected_cells:
+				self.probability_of_Infection +=0.10
+			if self.resistance < self.probability_of_Infection:
+				self.gets_infected()
 			
-	def check_dead(self,numberOfDead):
+	def check_dead(self,numberOfDead,infected_cells):
 		if self.infection_time>0:
-			self.probability_of_death += np.random.choice([0,1],p=[1/self.infection_time,1-1/self.infection_time])
+			self.probability_of_death += 0.3*np.random.choice([0,1],p=[1/self.infection_time,1-1/self.infection_time])
 			
 			if self.probability_of_death>=1:
 				self.dead = True
+
 			if self.dead:
 				numberOfDead+=1
 		else:
@@ -106,7 +111,7 @@ class People:
 		if self.infected:
 				self.infection_time+=1
 				numberOfInfected+=1
-				numberOfDead =  self.check_dead(numberOfDead)
+				numberOfDead =  self.check_dead(numberOfDead,infected_cells)
 
 		elif self.infected == False:
 				self.check_infection(infected_cells)
