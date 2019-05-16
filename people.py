@@ -6,6 +6,8 @@ Each people have an unique identifier or ID, it's location as xpos and ypos, inf
 import uuid
 import random
 import numpy as np
+from neighbours import *
+
 class People:   
 	
 	def __init__(self, num_rows,num_cols, infection= False, resistance= random.random(), infection_time =  0):
@@ -78,17 +80,24 @@ class People:
 		self .ypos+=cMove
 
 
-	def check_infection(self,infected_cells,):
+	def check_infection(self,infected_cells,Neighbour_Choice):
 		if self.dead:
 			'''
 			Dead ones cannot infect healthy people
 			'''
 
-		else:	
-			if (self.xpos,self.ypos) in infected_cells:
-				self.probability_of_Infection +=0.10
-			if self.resistance < self.probability_of_Infection:
-				self.gets_infected()
+		else:
+			if Neighbour_Choice == 1:
+
+				if (self.xpos,self.ypos) in vou_neuman_neighbour(infected_cells):
+					self.probability_of_Infection +=0.10
+				if self.resistance < self.probability_of_Infection:
+					self.gets_infected()
+			else:
+				if (self.xpos,self.ypos) in moore_neighbour(infected_cells):
+					self.probability_of_Infection +=0.10
+				if self.resistance < self.probability_of_Infection:
+					self.gets_infected()
 			
 	def check_dead(self,numberOfDead,infected_cells):
 		if self.infection_time>0:
@@ -104,7 +113,7 @@ class People:
 
 		return numberOfDead
 
-	def each_timestep(self,NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells):
+	def each_timestep(self,NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells,Neighbour_Choice):
 		
 		self.move_people(NUM_ROWS,NUM_COLS,Airport_Cells,Boundary_Cells)
 
@@ -114,7 +123,7 @@ class People:
 				numberOfDead =  self.check_dead(numberOfDead,infected_cells)
 
 		elif self.infected == False:
-				self.check_infection(infected_cells)
+				self.check_infection(infected_cells,Neighbour_Choice)
 
 		return(numberOfInfected,numberOfDead)	
 			

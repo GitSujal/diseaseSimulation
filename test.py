@@ -9,6 +9,8 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+from neighbours import *
+
 
 
 def scatterplot_people(person):
@@ -60,31 +62,11 @@ def plot_boundary(Cells,color='black'):
 	plt.scatter(x_array,y_array,s=area,marker='s',c=color,alpha=1.0)
 
 
-def vou_neuman_neibhbour(Cells):
-	vou_neuman_neibhbour_cells=[]
-	for (x,y) in Cells:
-		vou_neuman_neibhbour_cells.append((x,y))
-		vou_neuman_neibhbour_cells.append((x+1,y))
-		vou_neuman_neibhbour_cells.append((x,y+1))
-		vou_neuman_neibhbour_cells.append((x-1,y))
-		vou_neuman_neibhbour_cells.append((x,y-1))
-
-	return vou_neuman_neibhbour_cells
-
-def moore_neighbour(Cells):
-	moore_neighbour_cells = vou_neuman_neibhbour(Cells)
-	for (x,y) in Cells:
-		moore_neighbour_cells.append((x+1,y+1))
-		moore_neighbour_cells.append((x-1,y+1))
-		moore_neighbour_cells.append((x+1,y-1))
-		moore_neighbour_cells.append((x-1,y-1))
-	return moore_neighbour_cells
-
 '''
 Defining intial variables and setting them to some default vales.
 '''
-Initial_Values_Names= ["INIT_POPULATION","INIT_INFECTED","NUM_ROWS","NUM_COLS,NUM_STEPS"]
-Initial_Values_Array = [500,20,20,20,15]
+Initial_Values_Names= ["INIT_POPULATION","INIT_INFECTED","NUM_ROWS","NUM_COLS,NUM_STEPS","Neighbours Choice"]
+Initial_Values_Array = [500,20,20,20,15,1]
 area = (5)**2
 
 ''''
@@ -94,7 +76,7 @@ Getting the system argument and initialising population with the values provided
 if len(sys.argv) == 1:
 	print("No arguments passed initialising with default values\n")
 
-if len(sys.argv)<=6:
+if len(sys.argv)<=7:
 	for i in range(1,len(sys.argv)) :
 		#Checking that the provided arguments are numerical values
 		if sys.argv[i].isnumeric():
@@ -105,7 +87,7 @@ if len(sys.argv)<=6:
 else:
 	print("More arguments passed than required. Please enter upto 6 arguments. Initialising with default values")
 
-INIT_POP,INIT_INFECTED,NUM_COLS,NUM_ROWS,NUM_STEPS = Initial_Values_Array
+INIT_POP,INIT_INFECTED,NUM_COLS,NUM_ROWS,NUM_STEPS,Neighbours_Choice = Initial_Values_Array
 
 
 '''
@@ -150,8 +132,8 @@ for i in range(0,INIT_POP):
 	population.append(person)
 	scatterplot_people(person)
 	plot_Airport(Airport_Cells)
-	plot_Airport(moore_neighbour(Airport_Cells),"green")
-	plot_Airport(vou_neuman_neibhbour(Airport_Cells),"red")
+	#plot_Airport(moore_neighbour(Airport_Cells),"green")
+	#plot_Airport(vou_neuman_neibhbour(Airport_Cells),"red")
 	plot_boundary(Boundary_Cells)
 title_string = "Simualtion for "+ str(INIT_POP) + " People with " +str(INIT_INFECTED) +" Infected ones" 
 plt.xlim(0,NUM_ROWS)
@@ -178,10 +160,10 @@ for timestep in range(NUM_STEPS):
 	numberOfInfected=0
 	numberOfDead=0
 	for person in population:
-		numberOfInfected,numberOfDead =  person.each_timestep(NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells)
+		numberOfInfected,numberOfDead =  person.each_timestep(NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells,Neighbours_Choice)
 		scatterplot_people(person)
 	
-	numberOfHealthyPeople = INIT_POP - numberOfInfected - numberOfDead
+	numberOfHealthyPeople = INIT_POP - numberOfInfected -numberOfDead
 	total_infected.append(numberOfInfected)
 	total_Healthy.append(numberOfHealthyPeople)
 	total_dead.append(numberOfDead)
@@ -192,7 +174,9 @@ for timestep in range(NUM_STEPS):
 	plt.ylim(0,NUM_COLS)
 	plot_Airport(Airport_Cells)
 	plot_boundary(Boundary_Cells)
-	filename="./Output/Outputfile"+str(timestep)+".png"
+
+	filename="./Output/Image"+str(timestep)+".png"
+	
 	title_string_timestep = "Simulation for " +str(timestep)+ " timestep "
 	subtitle_string = 'Not Infected: '+ str(numberOfHealthyPeople),' Infected: '+ str(numberOfInfected) +' Dead: ' +str(numberOfDead)
 	plt.suptitle(title_string_timestep)
@@ -209,4 +193,4 @@ plt.plot(xAxis,total_Healthy,'b-',xAxis,total_infected,'r-',xAxis,total_dead,'k-
 plt.savefig("growth.png")
 plt.xlabel("TIMESTEP")
 plt.title("Growth of Healthy,Infected and Dead Population over time")
-#plt.show()
+plt.savefile("FinalResult.png")
