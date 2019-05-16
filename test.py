@@ -156,6 +156,8 @@ plt.title(title_string)
 total_infected=[]
 total_Healthy=[]
 total_dead=[]
+Neighbours_Choice_array=["Vou Neuman Neighbour"," Moore Neighbour"]
+
 for timestep in range(NUM_STEPS):
 	numberOfInfected=0
 	numberOfDead=0
@@ -177,7 +179,9 @@ for timestep in range(NUM_STEPS):
 
 	filename="./Output/Image"+str(timestep)+".png"
 	
-	title_string_timestep = "Simulation for " +str(timestep)+ " timestep "
+
+	title_string_timestep = "Simulation for " +str(timestep)+ " timestep "+"using"+Neighbours_Choice_array[Neighbours_Choice-1]
+
 	subtitle_string = 'Not Infected: '+ str(numberOfHealthyPeople),' Infected: '+ str(numberOfInfected) +' Dead: ' +str(numberOfDead)
 	plt.suptitle(title_string_timestep)
 	plt.title(subtitle_string)
@@ -193,4 +197,4 @@ plt.plot(xAxis,total_Healthy,'b-',xAxis,total_infected,'r-',xAxis,total_dead,'k-
 plt.savefig("growth.png")
 plt.xlabel("TIMESTEP")
 plt.title("Growth of Healthy,Infected and Dead Population over time")
-plt.savefile("FinalResult.png")
+plt.savefig("FinalResult.png")
