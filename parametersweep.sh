@@ -42,8 +42,8 @@ do
 			cp neighbours.py $EachExperiment
 			cd $EachExperiment
 			mkdir $EachExperimentOutput
-			python3 test.py $i $j $NUM_ROWS $NUM_COLS $NUM_STEPS $k
-			rm diseaseSimulation.py neighbours.py people.py parametersweep.py
+			python3 diseaseSimulation.py $i $j $NUM_ROWS $NUM_COLS $NUM_STEPS $k
+			rm diseaseSimulation.py neighbours.py people.py
 			cd ..
 		done
 	done
