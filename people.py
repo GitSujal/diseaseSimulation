@@ -8,6 +8,8 @@ import random
 import numpy as np
 from neighbours import *
 
+
+
 class People:   
 	
 	def __init__(self, num_rows=20,num_cols=20, infection= False, resistance= random.random(), infection_time =  0):
@@ -17,7 +19,7 @@ class People:
 		1. a unique ID
 		2. a random xpos and ypos
 		3. a bool value infected representing whether it is infected or  not
-		4. a value rangin between 0-1 representing the resistance power against infection of that people.
+		4. a value ranging between 0-1 representing the resistance power against infection of that people.
 		5. a timer ranging from 0-10 representing how long has the person been infected. Once it reaches 10 the person dies.
 		6. a bool value dead representing whether the person is dead or not.
 		7. probability of death meaning the chances of person being dead after being infected. For non infected it would be zero.
@@ -114,18 +116,24 @@ class People:
 			Dead ones cannot infect healthy people
 			'''
 		else:
-			if Neighbour_Choice == 1:
-				if (self.xpos,self.ypos) in vou_neuman_neighbour(infected_cells) and (self.xpos,self.ypos) not in (infected_cells) :
+			if (self.xpos,self.ypos) in (infected_cells):
+				'''
+				If a people is in infected cell it increases the chance of infection by 5%
+				'''
+				self.probability_of_Infection +=0.05
+
+			if (self.xpos,self.ypos) in vou_neuman_neighbour(infected_cells) and (self.xpos,self.ypos) not in infected_cells :
+				'''
+				If a people is in vou neuman neighbour of infected cell it increases chance of infection by 2.5%
+				'''
+				self.probability_of_Infection +=0.025
+			
+			if Neighbour_Choice == 2:
+				if (self.xpos,self.ypos) in moore_neighbour(infected_cells) and (self.xpos,self.ypos) not in infected_cells and (self.xpos,self.ypos) not in vou_neuman_neighbour(infected_cells):
+					'''
+					If a people is in Moore neighbour of infected cell it increases the chance of infection by 2%
+					'''
 					self.probability_of_Infection +=0.02
-				if (self.xpos,self.ypos) in (infected_cells):
-					self.probability_of_Infection +=0.05
-				if self.resistance < self.probability_of_Infection:
-					self.gets_infected()
-			else:
-				if (self.xpos,self.ypos) in moore_neighbour(infected_cells) and (self.xpos,self.ypos) not in (infected_cells):
-					self.probability_of_Infection +=0.02
-				if (self.xpos,self.ypos) in (infected_cells):
-					self.probability_of_Infection +=0.05
 
 			if self.resistance < self.probability_of_Infection:
 				self.gets_infected()
@@ -133,13 +141,13 @@ class People:
 	def check_dead(self,numberOfDead,infected_cells):
 		'''
 		Check if the people is dead.
-
 		'''
+
 		if self.infection_time>0:
 			'''
 			If person is infected for longer than 1 timestamp the probabiltiy of death increase by 0.3*certain random value between 0-1.
 			'''
-			self.probability_of_death += 0.3*np.random.choice([0,1],p=[1/self.infection_time,1-1/self.infection_time])
+			self.probability_of_death += 0.1*np.random.choice([0,1],p=[1/self.infection_time,1-1/self.infection_time])
 			
 			if self.probability_of_death>=1:
 				self.dead = True

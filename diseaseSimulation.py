@@ -24,6 +24,10 @@ import matplotlib.pyplot as plt
 import sys
 from neighbours import *
 
+# Setting seed for reproducibility
+random.seed(19302657) 
+np.random.seed(19302659)
+
 
 def scatterplot_people(person):
 	'''
@@ -61,18 +65,6 @@ def plot_cells(Cells,size,color='yellow',label="default"):
 		x_array.append(x)
 		y_array.append(y)
 	plt.scatter(x_array,y_array,s=size*area,marker='s',c=color,alpha=0.75)
-
-
-# def plot_boundary(Cells,color='black'):
-# 	'''
-# 	Function to plot boundary cells takes the boundary cells coordinates as argument.
-# 	''' 
-# 	x_array= []
-# 	y_array=[]
-# 	for x,y in Cells:
-# 		x_array.append(x)
-# 		y_array.append(y)
-# 	plt.scatter(x_array,y_array,s=area,marker='s',c=color,alpha=1.0)
 
 
 '''
@@ -155,6 +147,11 @@ title_string = "Simualtion for "+ str(INIT_POP) + " People with " +str(INIT_INFE
 plt.xlim(0,NUM_ROWS)
 plt.ylim(0,NUM_COLS)
 plt.title(title_string)
+plt.clf()
+plt.cla()
+plt.close()
+
+
 #plt.show()
 
 
@@ -217,6 +214,8 @@ xAxis = range(0,NUM_STEPS)
 plt.plot(xAxis,total_Healthy,'b-',label='Healthy Population')
 plt.plot(xAxis,total_infected,'r-',label='Infected Population')
 plt.plot(xAxis,total_dead,'k-',label='Dead Population')
+plt.xlim(0,NUM_STEPS)
+plt.ylim(0,INIT_POP)
 plt.xlabel("TIMESTEP")
 plt.title("Growth of Healthy,Infected and Dead Population over time")
 plt.legend()
