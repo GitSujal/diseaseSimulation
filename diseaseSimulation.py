@@ -1,7 +1,20 @@
-'''Testing people.py
+# Author: Sujal Dhungana
+# Student ID: 19302779
+# Unit: Fundamentals of Programming COMP5005
+# Program: Master of Predictive Analytics
+#Unit Co ordinator: Dr. Valerie Maxville
+#Assignment Title: Disease Simulation
+#Submission Date: 21 May 2019
 
-System Arguments should follow this order.
-INIT_POPULATION,INIT_INFECTED,NUM_ROWS,NUM_COLS,NUM_STEPS
+'''
+diseaseSimulation.py
+This program simulates spread of diesease over population in a world. World consists of barrier where people can't pass through.
+Airports allow people to travel randomly from one place to another. 
+Program can be run with or without system arguments. If no system arguments provided it runs with default values. 
+
+The System Arguments should follow this order.
+INIT_POPULATION,INIT_INFECTED,NUM_ROWS,NUM_COLS,NUM_STEPS,Neighbours_choice
+
 '''
 
 from  people import People
@@ -12,12 +25,12 @@ import sys
 from neighbours import *
 
 
-
 def scatterplot_people(person):
 	'''
 	Function to plot scatterplot based on either a person is dead, infected or healthy
 	'''
 	#Getting data from each person for plotting.
+
 	(xpos,ypos,infected,dead) = person.plot_people()
 	if dead:
 		plt.scatter(xpos,ypos,s=area,marker='x',alpha=0.2,c='black')
@@ -32,12 +45,13 @@ def scatterplot_people(person):
 def print_detail(INIT_POP,numberOfHealthyPeople,numberOfInfected,numberOfDead):
 	'''
 	Function to print detail about the population, including number of people living, infected and dead.
+	Arguments needed: Initial population, number of healthy people, number of infected, number of Dead.
 	'''
-	print("Alive Populatingo| Healthy People| Infected People| Dead People")
+	print("Alive Population| Healthy People| Infected People| Dead People")
 	print("    ",INIT_POP - numberOfDead , "\t      ",numberOfHealthyPeople, "\t  \t", numberOfInfected, " \t \t  ",numberOfDead)
 
 
-def plot_Airport(Cells,color='yellow'):
+def plot_cells(Cells,size,color='yellow',label="default"):
 	'''
 	Function to plot Airport cells takes the Airport cells coordinates as argument.
 	'''
@@ -46,25 +60,25 @@ def plot_Airport(Cells,color='yellow'):
 	for x,y in Cells:
 		x_array.append(x)
 		y_array.append(y)
-		
-	plt.scatter(x_array,y_array,s=4*area,marker='s',c=color,alpha=0.75)
+	plt.scatter(x_array,y_array,s=size*area,marker='s',c=color,alpha=0.75)
 
 
-def plot_boundary(Cells,color='black'):
-	'''
-	Function to plot boundary cells takes the boundary cells coordinates as argument.
-	''' 
-	x_array= []
-	y_array=[]
-	for x,y in Cells:
-		x_array.append(x)
-		y_array.append(y)
-	plt.scatter(x_array,y_array,s=area,marker='s',c=color,alpha=1.0)
+# def plot_boundary(Cells,color='black'):
+# 	'''
+# 	Function to plot boundary cells takes the boundary cells coordinates as argument.
+# 	''' 
+# 	x_array= []
+# 	y_array=[]
+# 	for x,y in Cells:
+# 		x_array.append(x)
+# 		y_array.append(y)
+# 	plt.scatter(x_array,y_array,s=area,marker='s',c=color,alpha=1.0)
 
 
 '''
 Defining intial variables and setting them to some default vales.
 '''
+
 Initial_Values_Names= ["INIT_POPULATION","INIT_INFECTED","NUM_ROWS","NUM_COLS,NUM_STEPS","Neighbours Choice"]
 Initial_Values_Array = [500,20,20,20,15,1]
 area = (5)**2
@@ -87,14 +101,13 @@ if len(sys.argv)<=7:
 else:
 	print("More arguments passed than required. Please enter upto 6 arguments. Initialising with default values")
 
-INIT_POP,INIT_INFECTED,NUM_COLS,NUM_ROWS,NUM_STEPS,Neighbours_Choice = Initial_Values_Array
+INIT_POP,INIT_INFECTED,NUM_ROWS,NUM_COLS,NUM_STEPS,Neighbours_Choice = Initial_Values_Array
 
 
 '''
 Adding some airports and boundaries.
 '''	
 Airport_Cells = [(NUM_COLS/4,0),(NUM_COLS,NUM_ROWS/4),(0,3*NUM_ROWS/4),(NUM_COLS,3*NUM_ROWS/4)]
-
 Boundary_Cells = []
 
 for i in range(0,(NUM_ROWS+1),1):
@@ -102,17 +115,18 @@ for i in range(0,(NUM_ROWS+1),1):
 for i in range(0,(NUM_COLS+1),1):
 	Boundary_Cells.append((i,NUM_ROWS/2))
 
-#Making few doors at the boundaries.
+
+#Making few doors at the boundaries to allow people movement through them.
 random_index = np.random.randint(0,len(Boundary_Cells)-10,size=4)
 for i in random_index:
 	del Boundary_Cells[i-1]
 	del Boundary_Cells[i]
 	del Boundary_Cells[i-2]
 
+
 '''
 Initialising population and factors associated with population and each people
 '''
-
 infection_probability = INIT_INFECTED/INIT_POP
 numberOfInfected = 0
 numberOfDead =0
@@ -131,10 +145,12 @@ for i in range(0,INIT_POP):
 	person=People(NUM_ROWS,NUM_COLS,infection = np.random.choice([0,1],p=[1-infection_probability,infection_probability]) ,infection_time=0)		
 	population.append(person)
 	scatterplot_people(person)
-	plot_Airport(Airport_Cells)
+	plot_cells(Airport_Cells,4,"yellow","Airporti")
+	plot_cells(Boundary_Cells,2,"black","Boundary")
+	#plot_Airport(Airport_Cells)
 	#plot_Airport(moore_neighbour(Airport_Cells),"green")
 	#plot_Airport(vou_neuman_neibhbour(Airport_Cells),"red")
-	plot_boundary(Boundary_Cells)
+	#plot_boundary(Boundary_Cells)
 title_string = "Simualtion for "+ str(INIT_POP) + " People with " +str(INIT_INFECTED) +" Infected ones" 
 plt.xlim(0,NUM_ROWS)
 plt.ylim(0,NUM_COLS)
@@ -152,7 +168,6 @@ plt.title(title_string)
 '''
 
 
-
 total_infected=[]
 total_Healthy=[]
 total_dead=[]
@@ -162,10 +177,14 @@ for timestep in range(NUM_STEPS):
 	numberOfInfected=0
 	numberOfDead=0
 	for person in population:
-		numberOfInfected,numberOfDead =  person.each_timestep(NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells,Neighbours_Choice)
+		numberOfInfected,numberOfDead = person.each_timestep(NUM_ROWS,NUM_COLS,infected_cells,numberOfInfected,numberOfDead,Airport_Cells,Boundary_Cells,Neighbours_Choice)
 		scatterplot_people(person)
 	
-	numberOfHealthyPeople = INIT_POP - numberOfInfected -numberOfDead
+	'''
+	Calculating number of healthy, unhealthy and dead population after each timestep and printing it. 
+	'''
+	numberOfHealthyPeople = INIT_POP - numberOfInfected
+
 	total_infected.append(numberOfInfected)
 	total_Healthy.append(numberOfHealthyPeople)
 	total_dead.append(numberOfDead)
@@ -174,11 +193,10 @@ for timestep in range(NUM_STEPS):
 	print_detail(INIT_POP,numberOfHealthyPeople,numberOfInfected,numberOfDead)
 	plt.xlim(0,NUM_ROWS)
 	plt.ylim(0,NUM_COLS)
-	plot_Airport(Airport_Cells)
-	plot_boundary(Boundary_Cells)
+	plot_cells(Airport_Cells,4,"yellow","Airport")
+	plot_cells(Boundary_Cells,2,"black","Boundary")
 
 	filename="./Output/Image"+str(timestep)+".png"
-	
 
 	title_string_timestep = "Simulation for " +str(timestep)+ " timestep "+"using"+Neighbours_Choice_array[Neighbours_Choice-1]
 
@@ -192,9 +210,18 @@ for timestep in range(NUM_STEPS):
 	print("File saved as ",filename)
 	#plt.show()
 
+'''
+Plotting the overall growth of population over time for whole experiment.
+'''
 xAxis = range(0,NUM_STEPS)
-plt.plot(xAxis,total_Healthy,'b-',xAxis,total_infected,'r-',xAxis,total_dead,'k-')
-plt.savefig("growth.png")
+plt.plot(xAxis,total_Healthy,'b-',label='Healthy Population')
+plt.plot(xAxis,total_infected,'r-',label='Infected Population')
+plt.plot(xAxis,total_dead,'k-',label='Dead Population')
 plt.xlabel("TIMESTEP")
 plt.title("Growth of Healthy,Infected and Dead Population over time")
+plt.legend()
 plt.savefig("FinalResult.png")
+plt.clf()
+plt.cla()
+plt.close()
+

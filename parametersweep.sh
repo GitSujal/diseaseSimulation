@@ -4,7 +4,7 @@ exp_dir=Simulation`date "+%Y-%m-%d_%H:%M:%S"`
 
 mkdir $exp_dir
 cp parametersweep.sh $exp_dir
-cp test.py $exp_dir
+cp diseaseSimulation.py $exp_dir
 cp people.py $exp_dir
 cp neighbours.py $exp_dir
 cd $exp_dir
@@ -37,12 +37,13 @@ do
 			EachExperimentOutput="Output"
 			mkdir $EachExperiment
 			cp parametersweep.sh $EachExperiment
-			cp test.py $EachExperiment
+			cp diseaseSimulation.py $EachExperiment
 			cp people.py $EachExperiment
 			cp neighbours.py $EachExperiment
 			cd $EachExperiment
 			mkdir $EachExperimentOutput
 			python3 test.py $i $j $NUM_ROWS $NUM_COLS $NUM_STEPS $k
+			rm diseaseSimulation.py neighbours.py people.py parametersweep.py
 			cd ..
 		done
 	done
