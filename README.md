@@ -45,7 +45,7 @@ The output from the simulation conducted via parameter sweep can be found in dir
 If a simulation is run directly from diseaseSimulation.py the output can be found at Output directory in the same directory.
 
 
-##Running the Program
+## Running the Program
 
 There are two ways of running this program.
 
@@ -101,4 +101,19 @@ Each system arguments corresponds to following value:
 
 The parameter sweep will run each simulation two times. One time taking Vou Neumann neighbourhood and next time with Moore neighbourhood. Output from each simulation can be found in separate folder under directory Simulation_timestamp.
 
+## Other Programs:
+###  1. people.py
+To test people.py you can run following commands:
 
+```
+python3 people.py
+```
+If the program is working this should intialise 5 people instance and print them out along with their unique identifier ID and random xpos and ypos. All people are not infected by default.
+
+### 2. neighbours.py
+To test neighbours.py you can run following commands:
+
+```
+python3 neighbours.py
+```
+If the program is working this should print all Vou Neumann and Moore neighbours for test cell (3,3)
