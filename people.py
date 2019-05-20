@@ -113,19 +113,22 @@ class People:
 			'''
 			Dead ones cannot infect healthy people
 			'''
-
 		else:
 			if Neighbour_Choice == 1:
-
-				if (self.xpos,self.ypos) in vou_neuman_neighbour(infected_cells):
-					self.probability_of_Infection +=0.10
+				if (self.xpos,self.ypos) in vou_neuman_neighbour(infected_cells) and (self.xpos,self.ypos) not in (infected_cells) :
+					self.probability_of_Infection +=0.02
+				if (self.xpos,self.ypos) in (infected_cells):
+					self.probability_of_Infection +=0.05
 				if self.resistance < self.probability_of_Infection:
 					self.gets_infected()
 			else:
-				if (self.xpos,self.ypos) in moore_neighbour(infected_cells):
-					self.probability_of_Infection +=0.10
-				if self.resistance < self.probability_of_Infection:
-					self.gets_infected()
+				if (self.xpos,self.ypos) in moore_neighbour(infected_cells) and (self.xpos,self.ypos) not in (infected_cells):
+					self.probability_of_Infection +=0.02
+				if (self.xpos,self.ypos) in (infected_cells):
+					self.probability_of_Infection +=0.05
+
+			if self.resistance < self.probability_of_Infection:
+				self.gets_infected()
 			
 	def check_dead(self,numberOfDead,infected_cells):
 		'''
