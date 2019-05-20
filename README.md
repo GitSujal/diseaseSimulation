@@ -17,7 +17,7 @@ The diseaseSimulation program requires following dependencies:
 6. [neighbours](https://github.com/GitSujal/diseaseSimulation/blob/master/neighbours.py): Neighbours program to get Vou Neumann and Moore neighbours for each cell. Can be found along with the diseaseSimulation program.
 7. [people](https://github.com/GitSujal/diseaseSimulation/blob/master/people.py): People class that holds all the information about the people in the world and functions to make changes on the world. Can be found along with the diseaseSimulation program.
 
-### To install other modules except ones found along the program.
+### To install other modules except ones found with the program.
 
 1. Using pip
 ```
