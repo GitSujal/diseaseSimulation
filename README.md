@@ -6,16 +6,15 @@
 
 # Disease Simulation
 
-##Dependencies
+## Dependencies
 The diseaseSimulation program requires following dependencies:
 
-1. [numpy] (https://www.numpy.org/): NumPY is a python package for mathematical computations. It is used for generating random numbers and handling higher dimensional numerical arrays.
+1. [numpy](https://www.numpy.org/): NumPY is a python package for mathematical computations. It is used for generating random numbers and handling higher dimensional numerical arrays.
 2. [matplotlib](https://matplotlib.org/): Matplotlib is a python package for generating plots. Matplotlib is used to plot the scatter plot and line graph for this program.
 3. [random](https://docs.python.org/2/library/random.html): random module in python is used for generating random float or random integer.
-4. [uuid] (https://www.npmjs.com/package/uuid): UUID module for python used for generating unique id for each people.
+4. [uuid](https://www.npmjs.com/package/uuid): UUID module for python used for generating unique id for each people.
 5. [sys](https://docs.python.org/3/library/sys.html): sys module to access system arguments in python.
 6. [neighbours](https://github.com/GitSujal/diseaseSimulation/blob/master/neighbours.py): Neighbours program to get Vou Neumann and Moore neighbours for each cell. Can be found along with the diseaseSimulation program.
-
 7. [people](https://github.com/GitSujal/diseaseSimulation/blob/master/people.py): People class that holds all the information about the people in the world and functions to make changes on the world. Can be found along with the diseaseSimulation program.
 
 ### To install other modules except ones found along the program.
@@ -31,7 +30,7 @@ pip3 install uuid
 
 Download Anaconda for your operating system and install it globally on your system.
 
-* [Download Anaconda] (https://www.anaconda.com/distribution/#download-section)
+* [Download Anaconda](https://www.anaconda.com/distribution/#download-section)
 
 ## Directory Overview 
 The directory consists of following files.
@@ -74,7 +73,7 @@ If no values are give the program used default values for the variables and runs
 * TIME_STEPS = 15
 * NEIGHBOURHOOD_CHOICE = 1 (Vou neumann neighbour)
 
-###Running the program with default values.
+### Running the program with default values.
 
 ```
 python3 diseaseSimulation.py
