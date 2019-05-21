@@ -102,7 +102,7 @@ class People:
 					cMove =0
 		
 				#Stopping person from getting through the boundary wall.
-				if ((self.xpos + rMove),( self.xpos + rMove)) in Boundary_Cells:
+				if ((self.xpos + rMove),( self.ypos + cMove)) in Boundary_Cells:
 					# print("Someone hit the boundary")
 					rMove=0
 					cMove=0

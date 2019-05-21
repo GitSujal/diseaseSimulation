@@ -64,7 +64,7 @@ def plot_cells(Cells,size,color='yellow',label="default"):
 	for x,y in Cells:
 		x_array.append(x)
 		y_array.append(y)
-	plt.scatter(x_array,y_array,s=size*area,marker='s',c=color,alpha=0.75)
+	plt.scatter(x_array,y_array,s=size*area,marker='s',c=color,alpha=1.0)
 
 
 '''
